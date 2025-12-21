@@ -16,7 +16,7 @@ OUTLINE_PORT=""
 BACKUP_DIR="/var/backups/ufw"
 
 # Optional; values override auto-detect
-TUN_IF="outline-tun1"
+TUN_IF=""
 LAN_IF=""
 GATEWAY_IP=""
 
