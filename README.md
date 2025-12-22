@@ -1,12 +1,14 @@
 # Outline UFW Kill Switch
 
-This is a script to force all internet traffic through the Outline VPN tunnel via UFW rules. It backs up your current UFW rules and applies a user-defined ruleset based on use case (such as preventing leaks while acessing the internet via captive portals).
+The [Outline VPN Client](https://getoutline.org/) is an excellent tool, but have you ever wondered why it doesn't have a killswitch like many other popular VPN services? Tired of manually setting firewall rules to make up for that lack of functionality? Tire no longer...
+
+This is a simple script to force all internet traffic through the Outline VPN tunnel via UFW rules. It backs up your current UFW rules and applies a user-defined ruleset based on your use case.
 
 ## Requirements
 
-- Linux with `ufw` installed and enabled (`sudo apt install ufw` on Debian/Ubuntu).
+- Linux with `ufw` installed and enabled.
 - Run commands with `sudo`.
-- Your Outline server IP and port (set `OUTLINE_IP` and `OUTLINE_PORT` in the script or as env vars).
+- Outline server IP and port (set `OUTLINE_IP` and `OUTLINE_PORT` in the script or as env vars).
 
 ## Usage
 
@@ -32,7 +34,8 @@ sudo ./ufw-outline_kill_switch.sh [mode]
 ## What it does
 
 - Auto-detects the Outline tunnel interface and LAN interface.
-- Backs up UFW rules to `/var/backups/ufw` before applying changes and remembers prior UFW state.
+- Retains UFW rule integrity by backing them up to `/var/backups/ufw` before applying changes.
+- Provides automatic rollback redundancy if a mode misbehaves.
 - Prepends deny rules, then allows loopback and the Outline handshake (TCP/UDP to `OUTLINE_IP:OUTLINE_PORT`).
 - Shows the resulting UFW status after applying a mode.
 
