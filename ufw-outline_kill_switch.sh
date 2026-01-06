@@ -20,6 +20,19 @@ TUN_IF=""
 LAN_IF=""
 GATEWAY_IP=""
 
+require_required_vars() {
+  local missing=()
+
+  [[ -z "$OUTLINE_IP" ]] && missing+=("OUTLINE_IP")
+  [[ -z "$OUTLINE_PORT" ]] && missing+=("OUTLINE_PORT")
+  [[ -z "$BACKUP_DIR" ]] && missing+=("BACKUP_DIR")
+
+  if ((${#missing[@]})); then
+    echo "[!] Missing required variable(s): ${missing[*]}."
+    exit 1
+  fi
+}
+
 usage() {
   cat <<'EOF'
 Usage:
@@ -282,9 +295,12 @@ apply_portal_rules() {
 ================================================
 ' 
 
-MODE="$1"
-
 require_root
+if [[ $# -lt 1 ]]; then
+  usage
+  exit 1
+fi
+MODE="$1"
 auto_detect_interfaces
 
 case "$MODE" in
@@ -299,6 +315,7 @@ case "$MODE" in
     ;;
 
   standard)
+    require_required_vars
     echo "[*] Enabling STANDARD kill switch..."
     prepare_kill_switch_mode
     apply_standard_rules
@@ -307,6 +324,7 @@ case "$MODE" in
     ;;
 
   hardened)
+    require_required_vars
     echo "[*] Enabling HARDENED kill switch..."
     prepare_kill_switch_mode
     apply_hardened_rules
