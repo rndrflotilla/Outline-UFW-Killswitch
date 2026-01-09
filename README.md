@@ -42,6 +42,7 @@ sudo ./ufw-outline_kill_switch.sh [mode]
 ## Notes
 
 - If auto-detection fails, set variables at the top of the script or via env vars: `TUN_IF`, `LAN_IF`, `GATEWAY_IP`.
+- You can set multiple values for OUTLINE_IP and OUTLINE_PORT using a ',' or ' ' between the values.
 - After using `portal`, switch back to `hardened` once authenticated.
 
 ## License
