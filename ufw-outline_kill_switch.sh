@@ -23,14 +23,28 @@ GATEWAY_IP=""
 require_required_vars() {
   local missing=()
 
-  [[ -z "$OUTLINE_IP" ]] && missing+=("OUTLINE_IP")
-  [[ -z "$OUTLINE_PORT" ]] && missing+=("OUTLINE_PORT")
+  has_list_values "$OUTLINE_IP" || missing+=("OUTLINE_IP")
+  has_list_values "$OUTLINE_PORT" || missing+=("OUTLINE_PORT")
   [[ -z "$BACKUP_DIR" ]] && missing+=("BACKUP_DIR")
 
   if ((${#missing[@]})); then
     echo "[!] Missing required variable(s): ${missing[*]}."
     exit 1
   fi
+}
+
+has_list_values() {
+  local value="${1//,/ }"
+  local token
+  for token in $value; do
+    return 0
+  done
+  return 1
+}
+
+normalize_list() {
+  local value="${1//,/ }"
+  echo "$value"
 }
 
 usage() {
@@ -232,8 +246,16 @@ allow_base() {
 }
 
 allow_outline_handshake() {
-  ufw_prepend allow out to "$OUTLINE_IP" port "$OUTLINE_PORT" proto tcp
-  ufw_prepend allow out to "$OUTLINE_IP" port "$OUTLINE_PORT" proto udp
+  local ip_list port_list ip port
+  ip_list="$(normalize_list "$OUTLINE_IP")"
+  port_list="$(normalize_list "$OUTLINE_PORT")"
+
+  for ip in $ip_list; do
+    for port in $port_list; do
+      ufw_prepend allow out to "$ip" port "$port" proto tcp
+      ufw_prepend allow out to "$ip" port "$port" proto udp
+    done
+  done
 }
 
 prepare_kill_switch_mode() {
