@@ -10,7 +10,8 @@ Modes: off | standard | hardened | portal
 ================================================
 '
 
-# Required; values set before launch
+# Required; values set before launch. 
+# You can set multiple values for OUTLINE_IP and OUTLINE_PORT with ',' or ' ', e.g. OUTLINE_PORT="443,1234".
 OUTLINE_IP=""
 OUTLINE_PORT=""
 BACKUP_DIR="/var/backups/ufw"
